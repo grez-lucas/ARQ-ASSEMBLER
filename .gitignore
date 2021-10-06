@@ -127,5 +127,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-#re_snippets
-re_snippets.txt
+
