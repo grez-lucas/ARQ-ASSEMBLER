@@ -14,7 +14,7 @@ JMP #F05
 MOV A,B
 CMP B,(A)
 JLE 11
-SHL (#F0),(B)
+SHL (i),(B)
 INC (B),#2
 MOV B,A
 XOR A,121

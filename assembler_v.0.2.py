@@ -1,33 +1,45 @@
 import re
 
-text = '''
-20.445.977-0
-coreyms.com
-19.877.200-6
-21.498.555-8
-yeahhh.200
-200.patatapopo20.445.977-0
-#FF
-#0D
-#05
-'''
+#file_name = input("Ingrese el nombre del archivo:")
+file_name = "p3_1-correccion2"
 
-text2 = 'Peter is a person'
+hexadecimal = r'#[A-F\d]{0,2}'
+literal = rf'(\d+|\w+|{hexadecimal})'
+dir = rf'\({literal}\)'
 
-urls = '''https://www.nasa.gov
-http://www.mineduc.cl
-https://stringy.net
-https:/www.clubpenguin.com
-'''
+instructions={"MOV":{r'^A,B$':'0000000',r'^B,A$':'0000001',rf'^A,{literal}$':'0000010',rf'^B,{literal}$':'0000011',rf'^A,{dir}$':'0100101',rf'^B,{dir}$':'0100110',rf'^{dir},A$':'0100111',rf'^{dir},B$':'0101000',r'^A,\(B\)$':'0101001',r'^B,\(B\)$':'0101010',r'^\(B\),A$':'0101011'},
+     "ADD":	{r'^A,B$':'0000100',r'^B,A$':'0000101',rf'^A,{literal}$':'0000110',rf'^B,{literal}$':'0000111',rf'^A,{dir}$':'0101100',rf'^B,{dir}$':'0101101',rf'^A,\(B\)$':'0101110',rf'^{dir}$':'0101111'},
+     "SUB":	{r'^A,B$':'0001000',r'^B,A$':'0001001',rf'^A,{literal}$':'0001010',rf'^B,{literal}$':'0001011',rf'^A,{dir}$':'0110000',rf'^B,{dir}$':'0110001',rf'^A,\(B\)$':'0110010',rf'^{dir}$':'0110011'},
+     "AND":	{r'^A,B$':'0001100',r'^B,A$':'0001101',rf'^A,{literal}$':'0001110',rf'^B,{literal}$':'0001111',rf'^A,{dir}$':'0101100',rf'^B,{dir}$':'0101101',rf'^A,\(B\)$':'0101110',rf'^{dir}$':'0101111'},
+     "OR":	{r'^A,B$':'0010000',r'^B,A$':'0010001',rf'^A,{literal}$':'0010010',rf'^B,{literal}$':'0010011',rf'^A,{dir}$':'0111000',rf'^B,{dir}$':'0111001',rf'^A,\(B\)$':'0111010',rf'^{dir}$':'0111011'},
+     "NOT":	{r'^A,A$':'0010100',r'^A,B$':'0010101',r'^B,A$':'0010110',r'^B,B$':'0010111',rf'^{dir},A$':'0111100',rf'^{dir},B$':'0111101',r'^\(B\)$':'0111110'},
+     "XOR":	{r'^A,B$':'0011000',r'^B,A$':'0011001',rf'^A,{literal}$':'0011010',rf'^B,{literal}$':'0011011',rf'^A,{dir}$':'0111111',rf'^B,{dir}$':'1000000',rf'^A,\(B\)$':'1000001',rf'^{dir}$':'1000010'},
+     "SHL":	{r'^A,A$':'0011100',r'^A,B$':'0011101',r'^B,A$':'0011110',r'^B,B$':'0011111',rf'^{dir},A$':'1000011',rf'^{dir},B$':'1000100',r'^\(B\)$':'1000101'},
+     "SHR":	{r'^A,A$':'0100000',r'^A,B$':'0100001',r'^B,A$':'0100010',r'^B,B$':'0100011',rf'^{dir},A$':'1000110',rf'^{dir},B$':'1000111',r'^\(B\)$':'1001000'},
+     "INC":	{r'^B$':'0100100',rf'^{dir}$':'1001001',r'^\(B\)$':'1001010'},
+     "RST":	{rf'^{dir}$':'1001011',r'^\(B\)$':'1001100'},
+     "CMP":	{r'^A,B$':'1001101',rf'^A,{literal}$':'1001110',rf'^B,{literal}$':'1001111',rf'^A,{dir}$':'1010000',rf'^B,{dir}$':'1010001',rf'^A,\(B\)$':'1010010'},
+     "JMP":	{rf'^{dir}$':'1010011'},
+     "JEQ":	{rf'^{dir}$':'1010100'},
+     "JNE":	{rf'^{dir}$':'1010101'},
+     "JGT":	{rf'^{dir}$':'1010110'},
+     "JLT":	{rf'^{dir}$':'1010111'},
+     "JGE":	{rf'^{dir}$':'1011000'},
+     "JLE":	{rf'^{dir}$':'1011001'},
+     "JCR":	{rf'^{dir}$':'1011010'},
+     "JOV":	{rf'^{dir}$':'1011011'},
+     "CALL":{rf'^{dir}$':'1010011'},
+     "RET":	{r'^\s*$':'1010100'}, #en las instrucciones aparece vacio
+     "PUSH":{r'^A$':'1010101',r'^B$':'1010110'},
+     "POP" :{r'^A$':'1010111',r'^B$':'1011000'}
+     }
 
-with open("p3_1-correccion2.ass") as file:
-	contents = file.read()
+
+file = open(file_name+".ass") 
+out_file = open(file_name+".txt",mode='w')
+
+contents = file.read()
 print(contents)
 
 
-pattern = re.compile(r'https?://(www\.)?(\w+)(\.\w+)') #pattern specified
-#hexadecimal = re.compile(r'#[A-F\d]{0,2}')
-matches = pattern.finditer(urls)
 
-for match in matches:
-	print(match)
