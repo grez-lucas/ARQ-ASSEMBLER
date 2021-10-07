@@ -17,17 +17,17 @@ text2 = 'Peter is a person'
 urls = '''https://www.nasa.gov
 http://www.mineduc.cl
 https://stringy.net
-https:/www.clubpenguin.com
+https://www.clubpenguin.com
 '''
 
-with open("e-parcial2/p3_1-correccion2.ass") as file:
+with open("p3_1-correccion2.ass") as file:
 	contents = file.read()
 print(contents)
 
 
-pattern = re.compile(r'https?://(www\.)?(\w+)(\.\w+)') #pattern specified
+pattern = re.compile(r'MOV') #pattern specified
 #hexadecimal = re.compile(r'#[A-F\d]{0,2}')
-matches = pattern.finditer(urls)
+match = pattern.search(contents)
 
-for match in matches:
-	print(match.group(1))
+print(match.group(0))
+print("len contents: ",len(contents))
