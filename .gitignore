@@ -3,3 +3,4 @@ assembler.py
 *.mem
 *.out
 regex_testing.py
+*.ass
