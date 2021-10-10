@@ -5,6 +5,15 @@ class bcolors:
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
+class clrPrint():
+    @staticmethod
+    def okPrint(value,value2):
+        print(f'\033[92m{value:<30}\t\t{value2:<40}\033[0m')
+    
+    @staticmethod
+    def failPrint(value,value2):
+        print(f'\033[91m{value:<30}\t\t{value2:<40}\033[0m')
+
 #file_name = input("Enter the file's name: ")
 file_name = "p3F_2i"
 
@@ -118,11 +127,11 @@ with open(file_name+".ass") as file:
                     value_valid,value_str,value_regexp_group = validate_pattern(valid_data_values[data_str],row)
 
                     if data_valid == False:
-                         print(f'{bcolors.FAIL}{row[:-1]:<30}    \t\t{"Invalid Variable Name":<40}{bcolors.ENDC}')
+                         clrPrint.failPrint(row[:-1],"Invalid Variable Name")
                     elif data_valid == True and value_valid == False:
-                         print(f'{bcolors.FAIL}{row[:-1]:<30}    \t\t{"Value Must be Hex or Dec":<40}{bcolors.ENDC}')
+                         clrPrint.failPrint(row[:-1],"Value Must be Hex or Dec")
                     else:
-                         print(f'{bcolors.OK}{row[:-1]:<30}      \t\t{"Valid Instruction":<40}{bcolors.ENDC}')
+                         clrPrint.okPrint(row[:-1],"Valid Instruction")
                          data_variables[rf'({data_regexp_group})'] = value_regexp_group
                          valid_row_counter +=1
  
@@ -161,7 +170,7 @@ with open(file_name+".ass") as file:
                     continue
                
                if (re.compile(label).search(row)):     #if row is LABEL: -> 
-                    print(f'{bcolors.OK}{row[:-1]:<30}      \t\t{"Valid Label":<40}{bcolors.ENDC}')
+                    clrPrint.okPrint(row[:-1],"Valid Label")
                     continue
 
 
@@ -171,18 +180,18 @@ with open(file_name+".ass") as file:
                operands_valid,operands_str,operands_regexp_group = validate_pattern(instructions[instruction_str],row)
 
                if instruction_valid == False:
-                    print(f'{bcolors.FAIL}{row[:-1]:<30}    \t\t{"Invalid Instruction":<40}{bcolors.ENDC}')
+                    clrPrint.failPrint(row[:-1],"Invalid Instruction")
                elif instruction_valid == True and operands_valid == False:
-                    print(f'{bcolors.FAIL}{row[:-1]:<30}    \t\t{"Invalid Operands":<40}{bcolors.ENDC}')
+                    clrPrint.failPrint(row[:-1],"Invalid Operands")
                else:
                     if instruction_str in list(instructions.keys())[12:20] and data_span:#if the instruction is a jump, check if the operand is a valid label
                          label_valid,label_str,label_regexp_group = validate_pattern(labels,row)
                          if label_valid == False:
-                              print(f'{bcolors.FAIL}{row[:-1]:<30}    \t\t{"Invalid Label Name":<40}{bcolors.ENDC}')
+                              clrPrint.failPrint(row[:-1],"Invalid Label Name")
                               row_counter+=1
                               continue
                          else:
-                              print(f'{bcolors.OK}{row[:-1]:<30}      \t\t{"Valid Jump":<40}{bcolors.ENDC}')
+                              clrPrint.okPrint(row[:-1],"Valid Jump")
                               out_file.write(instructions[instruction_str][operands_str])
                               out_file.write("\n")
                               continue
@@ -190,20 +199,20 @@ with open(file_name+".ass") as file:
 
                     if (re.compile(literal).search(operands_regexp_group)):#if one of the operands is a hex, dec or variable, check if it's valid
                          if (re.compile(hexadecimal).search(operands_regexp_group)) or (re.compile(decimal).search(operands_regexp_group)):#hex & dec block
-                              print(f'{bcolors.OK}{row[:-1]:<30}      \t\t{"Valid Instruction":<40}{bcolors.ENDC}')
+                              clrPrint.okPrint(row[:-1],"Valid Instruction")
                               valid_row_counter+=1
 
                          else:          #variable block
                               valid_variable,variable_str,variable_regexp_group =  validate_pattern(data_variables, operands_regexp_group)
                               if valid_variable == False:
-                                   print(f'{bcolors.FAIL}{row[:-1]:<30}    \t\t{"Invalid Variable Name":<40}{bcolors.ENDC}')
+                                   clrPrint.failPrint(row[:-1],"Invalid Variable name")
                               else:
-                                   print(f'{bcolors.OK}{row[:-1]:<30}      \t\t{"Valid Instruction":<40}{bcolors.ENDC}')
+                                   clrPrint.okPrint(row[:-1],"Valid Instruction")
                                    valid_row_counter+=1
                     
                     
                     else:
-                         print(f'{bcolors.OK}{row[:-1]:<30}      \t\t{"Valid Instruction":<40}{bcolors.ENDC}')
+                         clrPrint.okPrint(row[:-1],"Valid Instruction")
                          valid_row_counter+=1
                
 
@@ -216,9 +225,9 @@ with open(file_name+".ass") as file:
                     fileIsValid = False
           
           if fileIsValid == False:
-               print(f"\n{bcolors.FAIL}ERROR:  Couldn't assemble code -->\n\tOne or more lines are invalid{bcolors.ENDC}")
+               clrPrint.failPrint("\n","ERROR:  Couldn't assemble code -->\n\tOne or more lines are invalid")
           else:
-               print(f"\n{bcolors.OK}SUCCESS:  Code assembled successfully{bcolors.ENDC}")
+               clrPrint.okPrint("\n","SUCCESS:  Code assembled successfully")
           
 
 
