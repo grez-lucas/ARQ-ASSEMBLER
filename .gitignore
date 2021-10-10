@@ -1,1 +1,4 @@
 assembler.py
+*.txt
+*.mem
+*.out
