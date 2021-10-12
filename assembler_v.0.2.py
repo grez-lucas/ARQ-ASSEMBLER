@@ -10,13 +10,13 @@ class clrPrint():
         print(f'\033[91m{value:<30}\t\t{value2:<40}\033[0m')
 
 #file_name = input("Enter the file's name: ")
-file_name = "p3F_1"
+file_name = "p3_2-correccion2"
 
 label = r'^([a-zA-Z]\w+|[^AB,\.\(\)]):$' #A & B are exclusive for regA, regB
 variable = r'([a-zA-Z]\w+|[^AB,\(\)\s\d\.])' #A & B are exclusive for regA, regB
 binary = r'[0-1]{1,8}'
 hexadecimal = r'#([A-F\d]{0,2})'
-decimal = r'(25[0-5]|2[0-5]\d|1\d{1,2}|\d{1,2})'
+decimal = r'(-?25[0-5]|-?2[0-5]\d|-?1\d{1,2}|-?\d{1,2})'
 literal = rf'({decimal}|{hexadecimal}|{variable})'
 dir = rf'\({literal}\)'
 
@@ -237,7 +237,3 @@ with open(file_name+".ass") as file:
           else:
                clrPrint.okPrint("\n","SUCCESS:  Code assembled successfully")
           
-
-
-
-
