@@ -9,7 +9,6 @@ class clrPrint():
     def failPrint(value,value2):
         print(f'\033[91m{value:<30}\t\t{value2:<40}\033[0m')
 
-#file_name = input("Enter the file's name: ")
 file_name = "p3F_1"
 
 label = r'^([a-zA-Z]\w+|[^AB,\.\(\)]):$' #A & B are exclusive for regA, regB
