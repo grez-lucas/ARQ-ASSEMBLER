@@ -162,12 +162,13 @@ with open(file_name+".ass") as file:
 
           row_counter, valid_row_counter = 0 , 0
           fileIsValid = True
+          stack = []
 
           for row in file:
                if row == r'^\s+\n$':                   #if row is empty, continue to the next iteration
                     continue
                
-               if (re.compile(label).search(row)):     #if row is LABEL: -> 
+               if (re.compile(label).search(row)):     #if row is ONLY LABEL: -> 
                     clrPrint.okPrint(row[:-1],"Valid Label")
                     continue
 
@@ -182,20 +183,38 @@ with open(file_name+".ass") as file:
                elif instruction_valid == True and operands_valid == False:
                     clrPrint.failPrint(row[:-1],"Invalid Operands")
                else:
-                    if instruction_str in list(instructions.keys())[12:20] and data_span:#if the instruction is a jump, check if the operand is a valid label
+                    if instruction_str in list(instructions.keys())[12:21] and data_span:#if the instruction is a jump or CALL, check if the operand is a valid label
                          label_valid,label_str,label_regexp_group = validate_pattern(labels,row)
                          if label_valid == False:
                               clrPrint.failPrint(row[:-1],"Invalid Label Name")
                               row_counter+=1
                               continue
-                         else:
+                         elif instruction_str in list(instructions.keys())[12:20]:#if instruction is a jump
                               clrPrint.okPrint(row[:-1],"Valid Jump")
                               out_file.write(instructions[instruction_str][operands_str])
                               out_file.write(labels[label_str])
                               out_file.write("\n")
                               continue
+                         elif instruction_str == list(instructions.keys())[21]:#if instruction is CALL
+                              clrPrint.okPrint(row[:-1],"Valid Call")
+                              out_file.write(instructions[instruction_str][operands_str])
+                              out_file.write(labels[label_str])  #saves PC
+                              stack.append(labels[label_str])    #saves line number in stack
+                              out_file.write("\n")
+                              continue
 
-                    
+                    if instruction_str == list(instructions.keys())[22]:#if instruction is RET
+                         if len(stack)!=0:
+                              clrPrint.okPrint(row[:-1],"Valid RET")
+                              out_file.write(instructions[instruction_str][operands_str])
+                              out_file.write(toBin(str(int(stack[-1],2)+1)))     #writes PC+1
+                              out_file.write("\n")
+                              stack.pop()
+                              continue
+                         else:
+                              clrPrint.failPrint(row[:-1],"No CALL declared in file")
+                              row_counter+=1
+                              continue
 
                     if (re.compile(literal).search(operands_regexp_group)):#if one of the operands is a hex, dec or variable, check if it's valid
                          if (re.compile(hexadecimal).search(operands_regexp_group)) or (re.compile(decimal).search(operands_regexp_group)):#hex & dec block
@@ -240,4 +259,11 @@ with open(file_name+".ass") as file:
                clrPrint.failPrint("\n","ERROR:  Couldn't assemble code -->\n\tOne or more lines are invalid")
           else:
                clrPrint.okPrint("\n","SUCCESS:  Code assembled successfully")
-          
+
+if fileIsValid == True:
+     linesInFile = sum(1 for i in open(file_name+'.ass', 'rb'))
+     linesOutFile = sum(1 for i in open(file_name+'.out', 'rb'))
+     linesMemFile = sum(1 for i in open(file_name+'.mem', 'rb'))
+     clrPrint.okPrint(f"Lines in .ass file: {linesInFile}",'')
+     clrPrint.okPrint(f"Lines in .out file: {linesOutFile}",'')
+     clrPrint.okPrint(f"Lines in .mem file: {linesMemFile}",'')
