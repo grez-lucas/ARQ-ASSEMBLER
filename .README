@@ -1,0 +1,7 @@
+Para ocupar el assembler, basta con cambiar el valor de la variable "file_name" a el nombre del archivo que se desea leer (sin extensión) (se asume que la extension del archivo será .ass).
+
+El programa por si solo lee si el archivo a leer se trata de un programa assembly con bloques DATA y CODE o sin.
+
+El programa genera dos archivos, un .mem y un .out. Los va generando hasta que se encuentra con algun error, ahi detiene la escritura de los archivos de salida, pero sigue leyendo el resto del archivo original para buscar más errores. 
+
+Para interpretar el archivo de entrada, el programa usa regular expressions. Al comienzo, un par de diccionarios y funciones son creados para jugar con las lineas al momento de interpretarlas.
